@@ -7,6 +7,13 @@ scoreDisplay.style.fontSize = '24px'
 scoreDisplay.style.marginBottom = '12px'
 document.body.appendChild(scoreDisplay)
 
+const gameOverDisplay = document.createElement('div')
+gameOverDisplay.textContent = ''
+gameOverDisplay.style.color = 'white'
+gameOverDisplay.style.fontSize = '28px'
+gameOverDisplay.style.marginTop = '12px'
+document.body.appendChild(gameOverDisplay)
+
 const canvas = document.createElement('canvas')
 canvas.width = 600
 canvas.height = 600
@@ -66,8 +73,7 @@ function draw() {
 
   if (hitWall || hitSelf) {
     clearInterval(gameLoop)
-    // alert('Game Over!')
-    // window.location.reload()
+    gameOverDisplay.textContent = 'Game Over'
     return
   }
 
