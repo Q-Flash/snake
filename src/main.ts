@@ -54,4 +54,4 @@ document.addEventListener('keydown', (event) => {
 
 
 // Call the draw function every 500 milliseconds to animate the square
-setInterval(draw, 500)
+setInterval(draw, 150)
