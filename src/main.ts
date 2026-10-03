@@ -47,6 +47,19 @@ function draw() {
     y: head.y + dy,
   }
 
+  const hitWall =
+    newHead.x < 0 ||
+    newHead.x >= canvas.width ||
+    newHead.y < 0 ||
+    newHead.y >= canvas.height
+  
+  if (hitWall) {
+    clearInterval(gameLoop)
+    // alert('Game Over!')
+    // window.location.reload()
+    return
+  }
+
   // Check if the snake has eaten the food
   const ateFood =
   newHead.x === food.x &&
@@ -95,4 +108,4 @@ document.addEventListener('keydown', (event) => {
 
 
 // Call the draw function every 500 milliseconds to animate the square
-setInterval(draw, 150)
+const gameLoop = setInterval(draw, 150)
