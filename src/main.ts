@@ -53,12 +53,16 @@ function draw() {
     newHead.y < 0 ||
     newHead.y >= canvas.height
   
-  if (hitWall) {
+  const hitSelf = snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+
+  if (hitWall || hitSelf) {
     clearInterval(gameLoop)
     // alert('Game Over!')
     // window.location.reload()
     return
   }
+
+  
 
   // Check if the snake has eaten the food
   const ateFood =
