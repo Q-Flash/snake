@@ -47,9 +47,17 @@ function draw() {
     y: head.y + dy,
   }
 
+  // Check if the snake has eaten the food
+  const ateFood =
+  newHead.x === food.x &&
+  newHead.y === food.y
+
   // Add the new head to the beginning of the snake array and remove the last segment to simulate movement
+  // Don't remove the last segment if the snake has eaten the food
   snake.unshift(newHead)
-  snake.pop()
+  if (!ateFood) {
+    snake.pop()
+  }
 
   // Draw the food
   ctx.fillStyle = 'red'
