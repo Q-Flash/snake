@@ -17,6 +17,11 @@ const snake = [
 let dx = 30
 let dy = 0
 
+const food = {
+  x: 450,
+  y: 300,
+}
+
 function draw() {
   if (!ctx) {
     return
@@ -45,6 +50,10 @@ function draw() {
   // Add the new head to the beginning of the snake array and remove the last segment to simulate movement
   snake.unshift(newHead)
   snake.pop()
+
+  // Draw the food
+  ctx.fillStyle = 'red'
+  ctx.fillRect(food.x, food.y, 30, 30)
 }
 
 document.addEventListener('keydown', (event) => {
