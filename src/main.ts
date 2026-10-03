@@ -1,5 +1,12 @@
 import './style.css'
 
+const scoreDisplay = document.createElement('div')
+scoreDisplay.textContent = 'Score: 0'
+scoreDisplay.style.color = 'white'
+scoreDisplay.style.fontSize = '24px'
+scoreDisplay.style.marginBottom = '12px'
+document.body.appendChild(scoreDisplay)
+
 const canvas = document.createElement('canvas')
 canvas.width = 600
 canvas.height = 600
@@ -13,6 +20,8 @@ const snake = [
   { x: 270, y: 300 },
   { x: 240, y: 300 },
 ]
+
+let score = 0
 
 let dx = 30
 let dy = 0
@@ -62,8 +71,6 @@ function draw() {
     return
   }
 
-  
-
   // Check if the snake has eaten the food
   const ateFood =
   newHead.x === food.x &&
@@ -76,6 +83,12 @@ function draw() {
     snake.pop()
   } 
   else {
+    // Increase the score when the snake eats the food
+    score += 1
+
+    // Update the score display
+    scoreDisplay.textContent = `Score: ${score}`
+
     // Generate new food position
     food = {
       x: Math.floor(Math.random() * 20) * 30,
