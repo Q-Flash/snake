@@ -8,8 +8,11 @@ document.body.appendChild(canvas)
 
 const ctx = canvas.getContext('2d')
 
-let x = 300
-let y = 300
+const snake = [
+  { x: 300, y: 300 },
+  { x: 270, y: 300 },
+  { x: 240, y: 300 },
+]
 
 let dx = 30
 let dy = 0
@@ -24,10 +27,24 @@ function draw() {
 
   // Draw a green square at the center of the canvas
   ctx.fillStyle = 'lime'
-  ctx.fillRect(x, y, 30, 30)
 
-  x += dx
-  y += dy
+  // Draw each segment of the snake
+  for (const segment of snake) {
+    ctx.fillRect(segment.x, segment.y, 30, 30)
+  }
+
+  // Calculate the new head position based on the current direction
+  const head = snake[0]
+
+  // Create a new head based on the current direction
+  const newHead = {
+    x: head.x + dx,
+    y: head.y + dy,
+  }
+
+  // Add the new head to the beginning of the snake array and remove the last segment to simulate movement
+  snake.unshift(newHead)
+  snake.pop()
 }
 
 document.addEventListener('keydown', (event) => {
