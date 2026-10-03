@@ -17,7 +17,7 @@ const snake = [
 let dx = 30
 let dy = 0
 
-const food = {
+let food = {
   x: 450,
   y: 300,
 }
@@ -57,6 +57,13 @@ function draw() {
   snake.unshift(newHead)
   if (!ateFood) {
     snake.pop()
+  } 
+  else {
+    // Generate new food position
+    food = {
+      x: Math.floor(Math.random() * 20) * 30,
+      y: Math.floor(Math.random() * 20) * 30,
+    }
   }
 
   // Draw the food
