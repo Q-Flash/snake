@@ -14,6 +14,16 @@ gameOverDisplay.style.fontSize = '28px'
 gameOverDisplay.style.marginTop = '12px'
 document.body.appendChild(gameOverDisplay)
 
+const restartButton = document.createElement('button')
+restartButton.textContent = 'Restart'
+restartButton.style.display = 'none'
+restartButton.style.marginTop = '12px'
+restartButton.style.fontSize = '18px'
+restartButton.style.padding = '8px 16px'
+document.body.appendChild(restartButton)
+
+restartButton.addEventListener('click', restartGame)
+
 const canvas = document.createElement('canvas')
 canvas.width = 600
 canvas.height = 600
@@ -22,7 +32,7 @@ document.body.appendChild(canvas)
 
 const ctx = canvas.getContext('2d')
 
-const snake = [
+let snake = [
   { x: 300, y: 300 },
   { x: 270, y: 300 },
   { x: 240, y: 300 },
@@ -36,6 +46,30 @@ let dy = 0
 let food = {
   x: 450,
   y: 300,
+}
+
+function restartGame() {
+  snake = [
+    { x: 300, y: 300 },
+    { x: 270, y: 300 },
+    { x: 240, y: 300 },
+  ]
+
+  dx = 30
+  dy = 0
+
+  food = {
+    x: 450,
+    y: 300,
+  }
+
+  score = 0
+  scoreDisplay.textContent = 'Score: 0'
+
+  gameOverDisplay.textContent = ''
+  restartButton.style.display = 'none'
+
+  gameLoop = setInterval(draw, 150)
 }
 
 function draw() {
@@ -74,6 +108,7 @@ function draw() {
   if (hitWall || hitSelf) {
     clearInterval(gameLoop)
     gameOverDisplay.textContent = 'Game Over'
+    restartButton.style.display = 'block'
     return
   }
 
@@ -130,5 +165,6 @@ document.addEventListener('keydown', (event) => {
 })
 
 
+
 // Call the draw function every 500 milliseconds to animate the square
-const gameLoop = setInterval(draw, 150)
+let gameLoop = setInterval(draw, 150)
