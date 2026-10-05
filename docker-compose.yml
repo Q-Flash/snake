@@ -1,0 +1,18 @@
+name: snake-game
+services:
+  app:
+    container_name: snake-game
+    image: ${REGISTRY}/snake-game:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9098:80"
+    environment:
+      NGINX_SERVER_NAME: "${NGINX_SERVER_NAME}"
+    #   TLS_CERT_FILE: "${TLS_CERT_FILE}"
+    #   TLS_KEY_FILE: "${TLS_KEY_FILE}"
+    # volumes:
+    #   - "${TLS_CERT_FILE}:${TLS_CERT_FILE}:ro"
+    #   - "${TLS_KEY_FILE}:${TLS_KEY_FILE}:ro"
+    restart: unless-stopped

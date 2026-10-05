@@ -1,0 +1,117 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  COMPOSE_FILE: 'docker-compose.yml'
+  REGISTRY: 'qfcr.qflash.org'
+  NGINX_SERVER_NAME: 'snake.qflash.org'
+
+jobs:
+  build-and-push:
+    name: Build & Push
+
+    runs-on: ["self-hosted"]
+    environment:
+      name: 'Dev'
+      deployment: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Log in to registry
+        shell: bash
+        env:
+          REGISTRY_USERNAME: ${{ secrets.qfcr_username }}
+          REGISTRY_PASSWORD: ${{ secrets.qfcr_password }}
+        run: |
+          set -euo pipefail
+
+          echo "${REGISTRY_PASSWORD}" |
+            docker login "${REGISTRY}" \
+              --username "${REGISTRY_USERNAME}" \
+              --password-stdin
+
+      - name: Build Docker image
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose -f "${COMPOSE_FILE}" build
+
+      - name: Push Docker image
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose -f "${COMPOSE_FILE}" push
+
+      - name: Log out of registry
+        if: always()
+        shell: bash
+        run: |
+          docker logout "${REGISTRY}" || true
+
+
+  deploy:
+    name: 'Deploy Dev'
+    needs: build-and-push
+
+    runs-on: ["self-hosted"]
+    environment:
+      name: 'Dev'
+      deployment: false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up .env file
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "NGINX_SERVER_NAME=${NGINX_SERVER_NAME}" > .env
+          echo "REGISTRY=${REGISTRY}" >> .env
+
+      - name: Log in to registry
+        shell: bash
+        env:
+          REGISTRY_USERNAME: ${{ secrets.qfcr_username }}
+          REGISTRY_PASSWORD: ${{ secrets.qfcr_password }}
+        run: |
+          set -euo pipefail
+
+          echo "${REGISTRY_PASSWORD}" |
+            docker login "${REGISTRY}" \
+              --username "${REGISTRY_USERNAME}" \
+              --password-stdin
+
+      - name: Stop existing services with Docker Compose
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose -f "${COMPOSE_FILE}" down --remove-orphans || true
+
+      - name: Deploy with Docker Compose
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          docker compose -f "${COMPOSE_FILE}" pull
+          docker compose -f "${COMPOSE_FILE}" up -d --remove-orphans --wait
+
+      - name: Show deployment status
+        if: always()
+        shell: bash
+        run: |
+          docker compose -f "${COMPOSE_FILE}" ps
+
+      - name: Log out of registry
+        if: always()
+        shell: bash
+        run: |
+          docker logout "${REGISTRY}" || true
